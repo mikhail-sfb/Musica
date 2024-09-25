@@ -140,9 +140,9 @@
 
 ## 📚 Tools Used
 
-<p align="center">
+<p align="left">
   <img src="https://developer.apple.com/assets/elements/icons/metal/metal-96x96_2x.png" alt="Metal Logo" width="100" height="100"/>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Swift_logo.svg/1024px-Swift_logo.svg.png" alt="Swift Logo" width="100" height="100"/>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Swift_logo.svg/1024px-Swift_logo.svg.png" alt="Swift Logo" width="200" height="100"/>
   <img src="https://miro.medium.com/v2/resize:fit:600/format:webp/1*nm4j_6GfwWpqhuSPlbO-sg.png" alt="Core Data Logo" width="100" height="100"/>
 </p>
 
