@@ -1,50 +1,66 @@
-# Musica
+# Musica 
 
 **Group**: 253595  
 **Project Theme**: Music Player **Musica**
 
-## Project Overview
+---
 
-Musica is a music player, with Metal support, that allows users to upload and listen to their own music, organize tracks into playlists, customize the app's locale and theme, and interact with other features depending on the user's role.
+## 🎯 Project Overview
+
+**Musica** is a powerful music player, enhanced with **Metal** support, that allows users to upload, manage, and listen to their music. With rich features like playlists, localization, themes, and role-based access, it’s an ideal tool for music lovers. Admins have extended privileges to manage songs and monitor user submissions.
+
+---
 
 ## Functional Requirements
 
-1. Users can manage their own music installed locally [registered only].
-2. Users can create and organize playlists.
-3. Users can change the application's locale, theme, shaders, and others.
-4. Users can submit songs for admin review [registered only].
-5. Users can like accepted songs [registered only].
-6. Admins have all the capabilities of registered users, with the additional privilege of managing songs.
+1. **🎵 Music Management**: Users can upload and manage their own locally installed music (**registered users only**).
+2. **📜 Playlists**: Users can create and organize their music into playlists.
+3. **🌍 Customization**: Users can customize the app’s locale, theme, and visual shaders.
+4. **📤 Song Submission**: Users can submit songs for admin approval (**registered users only**).
+5. **❤️ Liking Songs**: Users can like accepted songs (**registered users only**).
+6. **🔧 Admin Privileges**: Admins can manage songs and perform all user actions with additional privileges.
 
-## Database Entities
+---
 
-### 1. **User/Admin**
-- Fields:
+## 🛠️ Database Entities
+
+### 1. **👤 User/Admin**
+
+- **Fields**:
   - `profile_image`: TEXT
   - `name`: VARCHAR(100) NOT NULL
   - `email`: VARCHAR(100) NOT NULL UNIQUE
   - `role`: ENUM('user', 'admin', 'unauthorized') NOT NULL
   - `settings_id`: INT, Foreign Key to `Settings`
   - `password`: VARCHAR(255) NOT NULL
-- Relationships: Admins inherit all properties of Users, manage `Tracks` and `Playlists`, linked to `Settings`.
+- **Relationships**: Admins inherit all user properties and can manage `Tracks` and `Playlists`, linked to `Settings`.
 
-### 2. **Artist**
-- Fields:
+---
+
+### 2. **🎤 Artist**
+
+- **Fields**:
   - `artist_id`: INT PRIMARY KEY
   - `name`: VARCHAR(100) NOT NULL
   - `image`: TEXT
   - `total_listenings`: INT DEFAULT 0
-- Relationships: Many-to-many with `Tracks`.
+- **Relationships**: Many-to-many with `Tracks`.
 
-### 3. **Playlist**
-- Fields:
+---
+
+### 3. **🎧 Playlist**
+
+- **Fields**:
   - `playlist_id`: INT PRIMARY KEY
   - `name`: VARCHAR(100) NOT NULL
   - `image`: TEXT
-- Relationships: Many-to-many with `Tracks`, belongs to `User`.
+- **Relationships**: Many-to-many with `Tracks`, belongs to `User`.
 
-### 4. **Track**
-- Fields:
+---
+
+### 4. **🎶 Track**
+
+- **Fields**:
   - `track_id`: INT PRIMARY KEY
   - `title`: VARCHAR(100) NOT NULL
   - `artist`: INT, Foreign Key to `Artist`
@@ -57,68 +73,91 @@ Musica is a music player, with Metal support, that allows users to upload and li
   - `genre`: VARCHAR(50)
   - `sended_by`: INT, Foreign Key to `User`
   - `status`: ENUM('pending', 'approved', 'rejected')
-- Relationships: Many-to-many with `Artists` and `Playlists`.
+- **Relationships**: Many-to-many with `Artists` and `Playlists`.
 
-### 5. **Journal (Action Log)**
+---
+
+### 5. **📝 Journal (Action Log)**
 
 #### 5.1 **Action**
-- Fields:
+
+- **Fields**:
   - `action_id`: INT PRIMARY KEY
   - `name`: VARCHAR(100) NOT NULL
   - `description`: TEXT
-- Relationships: Defines the type of action performed by the user. This table is linked to the `JournalLog` table.
+- **Relationships**: Defines the action type performed by the user.
 
 #### 5.2 **JournalLog**
-- Fields:
+
+- **Fields**:
   - `journal_id`: INT PRIMARY KEY
   - `user_id`: INT, Foreign Key to `User`
   - `action_id`: INT, Foreign Key to `Action`
   - `details`: TEXT
   - `timestamp`: DATETIME NOT NULL
-- Relationships: Tracks the specific actions performed by the user.
+- **Relationships**: Tracks specific user actions.
 
-### 6. **Album**
-- Fields:
+---
+
+### 6. **📀 Album**
+
+- **Fields**:
   - `album_id`: INT PRIMARY KEY
   - `name`: VARCHAR(100) NOT NULL
   - `image`: TEXT
   - `release_date`: DATE
-- Relationships: Contains many `Tracks`.
+- **Relationships**: Contains many `Tracks`.
 
-### 7. **UserTrackHistory**
-- Fields:
+---
+
+### 7. **🕒 UserTrackHistory**
+
+- **Fields**:
   - `history_id`: INT PRIMARY KEY
   - `user_id`: INT, Foreign Key to `User`
   - `track_id`: INT, Foreign Key to `Track`
   - `listened_at`: DATETIME NOT NULL
-- Relationships: Tracks user listening history, connected to `User` and `Track`.
+- **Relationships**: Tracks user listening history.
 
-### 8. **Like**
-- Fields:
+---
+
+### 8. **❤️ Like**
+
+- **Fields**:
   - `like_id`: INT PRIMARY KEY
   - `user_id`: INT, Foreign Key to `User`
   - `track_id`: INT, Foreign Key to `Track`
   - `timestamp`: DATETIME NOT NULL
-- Relationships: Users can like many `Tracks`, and tracks can be liked by many `Users`.
+- **Relationships**: Users can like multiple `Tracks`.
 
-### 9. **Settings**
-- Fields:
+### 9. **⚙️ Settings**
+
+- **Fields**:
   - `settings_id`: INT PRIMARY KEY
   - `locale`: VARCHAR(10) NOT NULL
   - `theme`: VARCHAR(50) NOT NULL
-- Relationships: Linked to `User`. Each `User` has one `Settings` entity to manage their locale and theme.
+- **Relationships**: Linked to `User` for locale and theme management.
 
-## Project Setup
+## 📚 Tools Used
 
-To run this project locally, follow these steps:
+<p align="center">
+  <img src="https://developer.apple.com/assets/elements/icons/metal/metal-96x96_2x.png" alt="Metal Logo" width="100" height="100"/>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/9/9d/Swift_logo.svg" alt="Swift Logo" width="100" height="100"/>
+  <img src="https://developer.apple.com/assets/elements/icons/core-data/core-data-96x96_2x.png" alt="Core Data Logo" width="100" height="100"/>
+</p>
 
-### Prerequisites
 
-- Xcode and Swift installed.
-- Core Data configured for database persistence.
-- Metal API for GPU-based rendering of animations and effects.
+## ⚙️ Project Setup
 
-### Installation
+### 🧰 Prerequisites
+
+- **Xcode** and **Swift** installed.
+- **Core Data** configured for database persistence.
+- **Metal API** for GPU-based rendering of animations and effects.
+
+---
+
+### 📥 Installation
 
 1. Clone the repository:
     ```bash
@@ -138,7 +177,9 @@ To run this project locally, follow these steps:
     swift run
     ```
 
-### Running Tests
+---
+
+### ✅ Running Tests
 
 To run tests:
 ```bash
