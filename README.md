@@ -1,10 +1,10 @@
-### Musica
+# Musica
 
 ##  Group: 253505  
 ##  Project Theme: Music Player
 
 ---
-<img src="https://github.com/user-attachments/assets/c1a202b3-6b06-4ed0-81fb-27221033b5f4" alt="logo" width="500" height="500" />
+<img src="https://github.com/user-attachments/assets/c1a202b3-6b06-4ed0-81fb-27221033b5f4" alt="logo" width="400" height="400" />
 
 ## 🎯 Project Overview
 
