@@ -1,6 +1,7 @@
 # Musica
 
 ##  Group: 253505  
+##  Student: Malashkevich Mikhail Ivanovich  
 ##  Project Theme: Music Player
 
 ---
@@ -47,15 +48,15 @@
 
 #### **🎵 Explore Screen**
 
-- **Search**: Browse through songs approved by the admin.
-- **Playlists**: Display playlists similar to Spotify.
-- **Create Playlist**: A button at the bottom for creating new playlists.
+- **Search**: Browse through songs approved by the admin, user can like the song (!🚨 Here user can download the song or stream it 🚨!).
+- **Popular Songs**: Display grid with most popular songs.
+- **Genre Categories**: Display music playlists in grid categories (e.g., Most Popular, Genres).
 
 #### **📂 Library Screen**
 
 - **View Modes**: Switch between grid and list views for browsing.
-- **Popular Songs**: Display grid with most popular songs.
-- **Genre Categories**: Display music categories in tiles (e.g., Most Popular, Genres).
+- **Playlists**: Display playlists similar to Spotify.
+- **Create Playlist**: A button at the bottom for creating new playlists.
 
 #### **📝 Playlist Management**
 
@@ -64,8 +65,9 @@
 
 #### **🎧 Track Details**
 
-- **Track Settings**: Track details similar to Spotify (note: artist may be missing).
+- **Track Settings**: Track details similar to Spotify (note: artist may be missing (!🚨 Here user can upload his songs 🚨!)).
 - **Track Screen**: Displays track information without sharing options or device info.
+- **Notifications**: Notify user on 3 states ENUM('pending', 'approved', 'rejected').
 
 ### 3. Settings Breakdown
 
@@ -134,6 +136,8 @@
 - `genre`: VARCHAR(50)
 - `sended_by`: INT REFERENCES `User`
 - `status`: ENUM('pending', 'approved', 'rejected')
+- `source`: ENUM('local', 'remote') DEFAULT 'local'  -- Indicates where the file is stored
+- `stream_url`: TEXT  -- URL for streaming the track if stored remotely
 - **Relationships**: Many-to-many with `Artists` and `Playlists`.
 
 ### 6. **📝 Journal & Action Log**
