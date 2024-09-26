@@ -1,10 +1,10 @@
 # 🎵 Musica
 
-**Group**: 253505  
-**Project Theme**: Music Player **Musica**
+## 👥 Group: 253505  
+## 🎵 Project Theme: Music Player **Musica**
 
 ---
-![logo](https://github.com/user-attachments/assets/c8bff4c2-cd8d-4a43-ac43-d5e4fe6389f7)
+![logo](https://github.com/user-attachments/assets/c1a202b3-6b06-4ed0-81fb-27221033b5f4)
 
 ## 🎯 Project Overview
 
