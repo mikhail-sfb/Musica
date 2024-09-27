@@ -35,7 +35,7 @@
 
 #### **📱 Bottom Navigation Bar**
 
-- **Explore**: Similar to Home with a focus on music discovery.
+- **Explore**: Explore streaming part of the app.
 - **Library**: Access user playlists and manage music collections.
 
 #### **🔝 App Bar**
