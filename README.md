@@ -35,7 +35,6 @@
 
 #### **📱 Bottom Navigation Bar**
 
-- **Home**: Explore music, playlists, and more.
 - **Explore**: Similar to Home with a focus on music discovery.
 - **Library**: Access user playlists and manage music collections.
 
