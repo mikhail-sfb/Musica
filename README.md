@@ -249,17 +249,6 @@
 **Relationships:**
 - **Many-to-Many**: Users can like multiple tracks, and tracks can be liked by multiple users (composite primary key on `user_id`, `track_id`).
 
----
-
-#### 1.13 **📌 Pinned_Playlists Table**
-
-- `user_id`: `UUID` REFERENCES `Users(id)` ON DELETE CASCADE
-- `playlist_id`: `INT` REFERENCES `Playlists(id)` ON DELETE CASCADE
-- `pinned_at`: `TIMESTAMP WITH TIME ZONE DEFAULT NOW()`
-- `PRIMARY KEY (user_id, playlist_id)`
-
-**Relationships:**
-- **Many-to-Many**: Users can pin multiple playlists, and playlists can be pinned by multiple users (composite primary key on `user_id`, `playlist_id`).
 
 ---
 
@@ -277,7 +266,7 @@ These tables handle the many-to-many relationships between various entities in t
 - `PRIMARY KEY (track_id, genre_id)`
 
 **Purpose**:  
-This join table links the `Tracks` and `Genres` tables in a many-to-many relationship. A track can belong to multiple genres, and a genre can have multiple tracks. This structure enables flexible categorization of tracks by genre.
+This join table links the `Tracks` and `Genres` tables in a many-to-many relationship. A track can belong to multiple genres, and a genre can have multiple tracks.
 
 ---
 
@@ -288,7 +277,7 @@ This join table links the `Tracks` and `Genres` tables in a many-to-many relatio
 - `PRIMARY KEY (artist_id, track_id)`
 
 **Purpose**:  
-This join table connects the `Artists` and `Tracks` tables in a many-to-many relationship. An artist can have multiple tracks, and a track can have multiple contributing artists. This structure supports collaborations and shared authorship on tracks.
+This join table connects the `Artists` and `Tracks` tables in a many-to-many relationship. An artist can have multiple tracks, and a track can have multiple contributing artists.
 
 ---
 
@@ -299,7 +288,22 @@ This join table connects the `Artists` and `Tracks` tables in a many-to-many rel
 - `PRIMARY KEY (playlist_id, track_id)`
 
 **Purpose**:  
-This join table links the `Playlists` and `Tracks` tables in a many-to-many relationship. A playlist can include multiple tracks, and a track can belong to multiple playlists. This allows users to create custom playlists without duplicating track data.
+This join table links the `Playlists` and `Tracks` tables in a many-to-many relationship. A playlist can include multiple tracks, and a track can belong to multiple playlists.
+
+---
+
+#### 2.4 **📌 Pinned_Playlists Tabl (Join Table)e**
+
+- `user_id`: `UUID` REFERENCES `Users(id)` ON DELETE CASCADE
+- `playlist_id`: `INT` REFERENCES `Playlists(id)` ON DELETE CASCADE
+- `PRIMARY KEY (user_id, playlist_id)`
+
+**Purpose:**
+This join table links the `Users` and `Playlists` tables in a one-to-many relationship. User can have multiple pinned playlists.
+
+---
+
+## 🌐 Diagram
 
 ## 📚 Tools & Technologies
 
