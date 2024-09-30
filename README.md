@@ -251,13 +251,6 @@ This join table connects the `Artists` and `Tracks` tables in a many-to-many rel
 **Purpose**:  
 This join table links the `Playlists` and `Tracks` tables in a many-to-many relationship. A playlist can include multiple tracks, and a track can belong to multiple playlists. This allows users to create custom playlists without duplicating track data.
 
----
-
-### Summary
-
-The **Entities** section contains the core tables that store key data such as users, tracks, playlists, artists, and genres. The **Entities for Relations** section contains the join tables that handle many-to-many relationships, linking the main entities together. These relationships are necessary to model flexible and dynamic interactions, such as users liking tracks, tracks belonging to multiple genres, and playlists containing various tracks.
-
-
 ## 📚 Tools & Technologies
 
 <p align="left">
@@ -269,7 +262,8 @@ The **Entities** section contains the core tables that store key data such as us
 
 - **Swift**: Language for building the app.
 - **Metal**: For GPU-based animations and effects.
-- **Core Data**: Database for music, playlists, and user data management.
+- **Core Data**: Local reltion data base.
+- **Core Data**: Remote relation data base with raw sql.
 
 ---
 
