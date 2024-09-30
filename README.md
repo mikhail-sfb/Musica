@@ -89,97 +89,174 @@
 
 ## 📊 Database Structure
 
-### 1. **👤 User/Admin Table**
+### 1. **Entities**
 
-- `id`: UUID PRIMARY KEY
-- `name`: VARCHAR(255)
-- `email`: VARCHAR(255) UNIQUE
-- `profile_image_url`: TEXT
-- `password`: VARCHAR(255)
-- **Relationships**: Admins can manage `Tracks` and `Playlists`.
+#### 1.1 **👤 Users Table**
 
-### 2. **⚙️ Settings Table**
-
-- `id`: UUID PRIMARY KEY
-- `user_id`: UUID REFERENCES `Users(id)` ON DELETE CASCADE
-- `current_locale`: ENUM ['en_US', 'pl_PL', 'es_ES'] DEFAULT 'en_US'
-- `shading_mode`: BOOLEAN DEFAULT FALSE
-- **Relationships**: One-to-one relationship with `Users`.
-
-### 3. **🎤 Artist Table**
-
-- `artist_id`: INT PRIMARY KEY
-- `name`: VARCHAR(100)
-- `image`: TEXT
-- `total_listenings`: INT DEFAULT 0
-- **Relationships**: Many-to-many relationship with `Tracks`.
-
-### 4. **🎧 Playlist Table**
-
-- `playlist_id`: INT PRIMARY KEY
-- `name`: VARCHAR(100)
-- `image`: TEXT
-- **Relationships**: Many-to-many relationship with `Tracks` and belongs to `Users`.
-
-### 5. **🎶 Track Table**
-
-- `track_id`: INT PRIMARY KEY
-- `title`: VARCHAR(100)
-- `artist`: INT, REFERENCES `Artist`
-- `file_path`: TEXT
-- `image`: TEXT
-- `image_color_set`: JSON
-- `length`: INT
-- `hard_points`: JSON
-- `shadered`: BOOLEAN
-- `genre`: VARCHAR(50)
-- `sended_by`: INT REFERENCES `User`
-- `status`: ENUM('pending', 'approved', 'rejected')
-- `source`: ENUM('local', 'remote') DEFAULT 'local'  -- Indicates where the file is stored
-- `stream_url`: TEXT  -- URL for streaming the track if stored remotely
-- **Relationships**: Many-to-many with `Artists` and `Playlists`.
-
-### 6. **📝 Journal & Action Log**
-
-#### **Action Table**
-
-- `action_id`: INT PRIMARY KEY
-- `name`: VARCHAR(100)
-- `description`: TEXT
-
-#### **Journal Log Table**
-
-- `journal_id`: INT PRIMARY KEY
-- `user_id`: INT REFERENCES `User`
-- `action_id`: INT REFERENCES `Action`
-- `details`: TEXT
-- `timestamp`: DATETIME
-
-### 7. **📀 Album Table**
-
-- `album_id`: INT PRIMARY KEY
-- `name`: VARCHAR(100)
-- `image`: TEXT
-- `release_date`: DATE
-- **Relationships**: Contains many `Tracks`.
-
-### 8. **🕒 UserTrackHistory Table**
-
-- `history_id`: INT PRIMARY KEY
-- `user_id`: INT REFERENCES `User`
-- `track_id`: INT REFERENCES `Track`
-- `listened_at`: DATETIME
-- **Relationships**: Tracks user listening history.
-
-### 9. **❤️ Like Table**
-
-- `like_id`: INT PRIMARY KEY
-- `user_id`: INT REFERENCES `User`
-- `track_id`: INT REFERENCES `Track`
-- `timestamp`: DATETIME
-- **Relationships**: Tracks liked songs by users.
+- `id`: `UUID` PRIMARY KEY
+- `name`: `TEXT` NOT NULL
+- `email`: `TEXT` UNIQUE NOT NULL
+- `profile_image_url`: `TEXT`
+- `password`: `TEXT` NOT NULL
+- `role_id`: `INT` REFERENCES `Roles(id)` NOT NULL
+- `settings_id`: `UUID` UNIQUE REFERENCES `Settings(id)` NOT NULL
 
 ---
+
+#### 1.2 **⚙️ Settings Table**
+
+- `id`: `UUID` PRIMARY KEY
+- `current_locale`: `TEXT` CHECK (current_locale IN ('en_US', 'pl_PL', 'es_ES')) DEFAULT 'en_US'
+- `shading_mode`: `BOOLEAN` DEFAULT FALSE
+
+---
+
+#### 1.3 **🛠️ Roles Table**
+
+- `id`: `SERIAL` PRIMARY KEY
+- `role_name`: ENUM('admin', 'user') NOT NULL DEFAULT 'user'
+
+---
+
+#### 1.4 **🎤 Artists Table**
+
+- `id`: `SERIAL` PRIMARY KEY
+- `name`: `TEXT` NOT NULL
+- `image`: `TEXT`
+- `total_listenings`: `INT` DEFAULT 0
+
+---
+
+#### 1.5 **🎧 Playlists Table**
+
+- `id`: `SERIAL` PRIMARY KEY
+- `name`: `TEXT` NOT NULL
+- `image`: `TEXT`
+- `user_id`: `UUID` REFERENCES `Users(id)` ON DELETE CASCADE
+
+---
+
+#### 1.6 **🎶 Tracks Table**
+
+- `id`: `SERIAL` PRIMARY KEY
+- `title`: `TEXT` NOT NULL
+- `file_path`: `TEXT` NOT NULL
+- `image`: `TEXT`
+- `image_color_set`: `JSON`
+- `length`: `INT` NOT NULL
+- `hard_points`: `JSON`
+- `is_shadered`: `BOOLEAN`
+- `uploaded_by`: `UUID` REFERENCES `Users(id)` NOT NULL
+- `status`: ENUM('pending', 'approved', 'rejected') NOT NULL
+- `source`: ENUM('local', 'remote') DEFAULT 'local'
+- `stream_url`: `TEXT`
+
+---
+
+#### 1.7 **📀 Albums Table**
+
+- `id`: `SERIAL` PRIMARY KEY
+- `name`: `TEXT` NOT NULL
+- `image`: `TEXT`
+- `release_date`: `TIMESTAMP WITH TIME ZONE`
+
+---
+
+#### 1.8 **🎚️ Genres Table**
+
+- `id`: `SERIAL` PRIMARY KEY
+- `name`: `TEXT` NOT NULL UNIQUE
+
+---
+
+#### 1.9 **📝 Journal Logs Table**
+
+- `id`: `SERIAL` PRIMARY KEY
+- `user_id`: `UUID` REFERENCES `Users(id)` ON DELETE CASCADE
+- `action_id`: `INT` REFERENCES `Actions(id)` ON DELETE CASCADE
+- `details`: `TEXT`
+- `created_at`: `TIMESTAMP WITH TIME ZONE DEFAULT NOW()`
+
+---
+
+#### 1.10 **🛠️ Actions Table**
+
+- `id`: `SERIAL` PRIMARY KEY
+- `name`: `TEXT` NOT NULL
+- `description`: `TEXT`
+
+---
+
+#### 1.11 **🕒 User_Track_History Table**
+
+- `id`: `SERIAL` PRIMARY KEY
+- `user_id`: `UUID` REFERENCES `Users(id)` ON DELETE CASCADE
+- `track_id`: `INT` REFERENCES `Tracks(id)` ON DELETE CASCADE
+- `listened_at`: `TIMESTAMP WITH TIME ZONE DEFAULT NOW()`
+
+---
+
+#### 1.12 **❤️ User_Likes Table**
+
+- `user_id`: `UUID` REFERENCES `Users(id)` ON DELETE CASCADE
+- `track_id`: `INT` REFERENCES `Tracks(id)` ON DELETE CASCADE
+- `created_at`: `TIMESTAMP WITH TIME ZONE DEFAULT NOW()`
+- `PRIMARY KEY (user_id, track_id)`
+
+---
+
+#### 1.13 **📌 Pinned_Playlists Table**
+
+- `user_id`: `UUID` REFERENCES `Users(id)` ON DELETE CASCADE
+- `playlist_id`: `INT` REFERENCES `Playlists(id)` ON DELETE CASCADE
+- `pinned_at`: `TIMESTAMP WITH TIME ZONE DEFAULT NOW()`
+- `PRIMARY KEY (user_id, playlist_id)`
+
+---
+
+### 2. **Entities for Relations**
+
+These tables handle the many-to-many relationships between various entities in the system. They are essential for efficiently linking records across the main entities.
+
+---
+
+#### 2.1 **🎨 Track_Genres (Join Table)**
+
+- `track_id`: `INT` REFERENCES `Tracks(id)` ON DELETE CASCADE
+- `genre_id`: `INT` REFERENCES `Genres(id)` ON DELETE CASCADE
+- `PRIMARY KEY (track_id, genre_id)`
+
+**Purpose**:  
+This join table links the `Tracks` and `Genres` tables in a many-to-many relationship. A track can belong to multiple genres, and a genre can have multiple tracks. This structure enables flexible categorization of tracks by genre.
+
+---
+
+#### 2.2 **🎤 Artist_Tracks (Join Table)**
+
+- `artist_id`: `INT` REFERENCES `Artists(id)` ON DELETE CASCADE
+- `track_id`: `INT` REFERENCES `Tracks(id)` ON DELETE CASCADE
+- `PRIMARY KEY (artist_id, track_id)`
+
+**Purpose**:  
+This join table connects the `Artists` and `Tracks` tables in a many-to-many relationship. An artist can have multiple tracks, and a track can have multiple contributing artists. This structure supports collaborations and shared authorship on tracks.
+
+---
+
+#### 2.3 **🎧 Playlist_Tracks (Join Table)**
+
+- `playlist_id`: `INT` REFERENCES `Playlists(id)` ON DELETE CASCADE
+- `track_id`: `INT` REFERENCES `Tracks(id)` ON DELETE CASCADE
+- `PRIMARY KEY (playlist_id, track_id)`
+
+**Purpose**:  
+This join table links the `Playlists` and `Tracks` tables in a many-to-many relationship. A playlist can include multiple tracks, and a track can belong to multiple playlists. This allows users to create custom playlists without duplicating track data.
+
+---
+
+### Summary
+
+The **Entities** section contains the core tables that store key data such as users, tracks, playlists, artists, and genres. The **Entities for Relations** section contains the join tables that handle many-to-many relationships, linking the main entities together. These relationships are necessary to model flexible and dynamic interactions, such as users liking tracks, tracks belonging to multiple genres, and playlists containing various tracks.
+
 
 ## 📚 Tools & Technologies
 
