@@ -168,11 +168,9 @@
 - `image_color_set`: `JSON`
 - `length`: `INT` NOT NULL
 - `hard_points`: `JSON`
-- `is_shadered`: `BOOLEAN`
 - `uploaded_by`: `UUID` REFERENCES `Users(id)` NOT NULL
 - `status`: ENUM('pending', 'approved', 'rejected') NOT NULL
 - `source`: ENUM('local', 'remote') DEFAULT 'local'
-- `stream_url`: `TEXT`
 
 **Relationships:**
 - **Many-to-One**: A track is uploaded by a single user (references `Users(uploaded_by)`).
