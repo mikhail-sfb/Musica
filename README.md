@@ -101,6 +101,16 @@
 - `role_id`: `INT` REFERENCES `Roles(id)` NOT NULL
 - `settings_id`: `UUID` UNIQUE REFERENCES `Settings(id)` NOT NULL
 
+**Relationships:**
+- **Many-to-One**: Users are linked to a single role via `role_id` (references `Roles(id)`).
+- **One-to-One**: Each user has a unique settings configuration via `settings_id` (references `Settings(id)`).
+- **One-to-Many**: A user can create multiple playlists (references `Playlists(user_id)`).
+- **One-to-Many**: A user can upload multiple tracks (references `Tracks(uploaded_by)`).
+- **One-to-Many**: A user can have multiple journal logs (references `Journal_Logs(user_id)`).
+- **One-to-Many**: A user can have multiple entries in the track listening history (references `User_Track_History(user_id)`).
+- **Many-to-Many**: A user can like many tracks, and a track can be liked by many users (via `User_Likes` table).
+- **Many-to-Many**: A user can pin multiple playlists, and a playlist can be pinned by many users (via `Pinned_Playlists` table).
+
 ---
 
 #### 1.2 **⚙️ Settings Table**
@@ -109,12 +119,18 @@
 - `current_locale`: `TEXT` CHECK (current_locale IN ('en_US', 'pl_PL', 'es_ES')) DEFAULT 'en_US'
 - `shading_mode`: `BOOLEAN` DEFAULT FALSE
 
+**Relationships:**
+- **One-to-One**: Each settings entry is linked to a single user (referenced by `Users(settings_id)`).
+
 ---
 
 #### 1.3 **🛠️ Roles Table**
 
 - `id`: `SERIAL` PRIMARY KEY
 - `role_name`: ENUM('admin', 'user') NOT NULL DEFAULT 'user'
+
+**Relationships:**
+- **One-to-Many**: Multiple users can be assigned the same role (referenced by `Users(role_id)`).
 
 ---
 
@@ -125,6 +141,9 @@
 - `image`: `TEXT`
 - `total_listenings`: `INT` DEFAULT 0
 
+**Relationships:**
+- No direct relationships with other tables.
+
 ---
 
 #### 1.5 **🎧 Playlists Table**
@@ -133,6 +152,10 @@
 - `name`: `TEXT` NOT NULL
 - `image`: `TEXT`
 - `user_id`: `UUID` REFERENCES `Users(id)` ON DELETE CASCADE
+
+**Relationships:**
+- **Many-to-One**: A playlist is created by a single user (references `Users(id)`).
+- **Many-to-Many**: A playlist can be pinned by multiple users (via `Pinned_Playlists` table).
 
 ---
 
@@ -151,6 +174,11 @@
 - `source`: ENUM('local', 'remote') DEFAULT 'local'
 - `stream_url`: `TEXT`
 
+**Relationships:**
+- **Many-to-One**: A track is uploaded by a single user (references `Users(uploaded_by)`).
+- **Many-to-Many**: A track can be liked by multiple users (via `User_Likes` table).
+- **One-to-Many**: A track can be listened to by many users in their track history (referenced by `User_Track_History(track_id)`).
+
 ---
 
 #### 1.7 **📀 Albums Table**
@@ -160,12 +188,18 @@
 - `image`: `TEXT`
 - `release_date`: `TIMESTAMP WITH TIME ZONE`
 
+**Relationships:**
+- No direct relationships with other tables.
+
 ---
 
 #### 1.8 **🎚️ Genres Table**
 
 - `id`: `SERIAL` PRIMARY KEY
 - `name`: `TEXT` NOT NULL UNIQUE
+
+**Relationships:**
+- No direct relationships with other tables.
 
 ---
 
@@ -177,6 +211,10 @@
 - `details`: `TEXT`
 - `created_at`: `TIMESTAMP WITH TIME ZONE DEFAULT NOW()`
 
+**Relationships:**
+- **Many-to-One**: A journal log is linked to a single user (references `Users(user_id)`).
+- **Many-to-One**: A journal log records a specific action (references `Actions(action_id)`).
+
 ---
 
 #### 1.10 **🛠️ Actions Table**
@@ -184,6 +222,9 @@
 - `id`: `SERIAL` PRIMARY KEY
 - `name`: `TEXT` NOT NULL
 - `description`: `TEXT`
+
+**Relationships:**
+- **One-to-Many**: Multiple journal logs can reference a single action (referenced by `Journal_Logs(action_id)`).
 
 ---
 
@@ -194,6 +235,10 @@
 - `track_id`: `INT` REFERENCES `Tracks(id)` ON DELETE CASCADE
 - `listened_at`: `TIMESTAMP WITH TIME ZONE DEFAULT NOW()`
 
+**Relationships:**
+- **Many-to-One**: Each entry tracks a single user’s listening history (references `Users(user_id)`).
+- **Many-to-One**: Each entry records the track that was listened to (references `Tracks(track_id)`).
+
 ---
 
 #### 1.12 **❤️ User_Likes Table**
@@ -202,6 +247,9 @@
 - `track_id`: `INT` REFERENCES `Tracks(id)` ON DELETE CASCADE
 - `created_at`: `TIMESTAMP WITH TIME ZONE DEFAULT NOW()`
 - `PRIMARY KEY (user_id, track_id)`
+
+**Relationships:**
+- **Many-to-Many**: Users can like multiple tracks, and tracks can be liked by multiple users (composite primary key on `user_id`, `track_id`).
 
 ---
 
@@ -212,7 +260,11 @@
 - `pinned_at`: `TIMESTAMP WITH TIME ZONE DEFAULT NOW()`
 - `PRIMARY KEY (user_id, playlist_id)`
 
+**Relationships:**
+- **Many-to-Many**: Users can pin multiple playlists, and playlists can be pinned by multiple users (composite primary key on `user_id`, `playlist_id`).
+
 ---
+
 
 ### 2. **Entities for Relations**
 
