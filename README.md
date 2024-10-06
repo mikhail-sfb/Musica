@@ -240,7 +240,17 @@ Links playlists to tracks in a many-to-many relationship.
 **Purpose:**  
 Links users to playlists they have pinned in a many-to-many relationship.
 
+### 2.5 🎼 AArtist's Albums (Join Table)
+- `album_id`: `INT` REFERENCES `Albums(id)`
+- `artist_id`: `INT` REFERENCES `Artists(id)`
+- `PRIMARY KEY (`album_id`, `artist_id`)`
+
+**Purpose:**
+Links artists with albums
+
+
 ## 🌐 Diagram
+<img width="736" alt="Screenshot 2024-10-06 at 23 43 47" src="https://github.com/user-attachments/assets/2e1c54e8-2410-421c-8758-e115b8ac6da4">
 
 ## 📚 Tools & Technologies
 
