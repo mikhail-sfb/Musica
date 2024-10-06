@@ -89,219 +89,156 @@
 
 ## 📊 Database Structure
 
-### 1. **Entities**
+## 1. Database Schema
 
-#### 1.1 **👤 Users Table**
-
+### 1.1 👤 Users Table
 - `id`: `UUID` PRIMARY KEY
 - `name`: `TEXT` NOT NULL
 - `email`: `TEXT` UNIQUE NOT NULL
 - `profile_image_url`: `TEXT`
 - `password`: `TEXT` NOT NULL
 - `role_id`: `INT` REFERENCES `Roles(id)` NOT NULL
-- `settings_id`: `UUID` UNIQUE REFERENCES `Settings(id)` NOT NULL
+- `settings_id`: `UUID` REFERENCES `Settings(id)` UNIQUE NOT NULL
 
 **Relationships:**
-- **Many-to-One**: Users are linked to a single role via `role_id` (references `Roles(id)`).
-- **One-to-One**: Each user has a unique settings configuration via `settings_id` (references `Settings(id)`).
-- **One-to-Many**: A user can create multiple playlists (references `Playlists(user_id)`).
-- **One-to-Many**: A user can upload multiple tracks (references `Tracks(uploaded_by)`).
-- **One-to-Many**: A user can have multiple journal logs (references `Journal_Logs(user_id)`).
-- **One-to-Many**: A user can have multiple entries in the track listening history (references `User_Track_History(user_id)`).
-- **Many-to-Many**: A user can like many tracks, and a track can be liked by many users (via `User_Likes` table).
-- **Many-to-Many**: A user can pin multiple playlists, and a playlist can be pinned by many users (via `Pinned_Playlists` table).
+- **Many-to-One**: Users are linked to a single role via `role_id`.
+- **One-to-One**: Each user is linked to a unique settings configuration via `settings_id`.
+- **One-to-Many**: A user can upload multiple tracks, manage multiple playlists, create multiple journal logs, have multiple entries in the listening history, and like multiple tracks.
 
----
-
-#### 1.2 **⚙️ Settings Table**
-
+### 1.2 ⚙️ Settings Table
 - `id`: `UUID` PRIMARY KEY
 - `current_locale`: `TEXT` CHECK (current_locale IN ('en_US', 'pl_PL', 'es_ES')) DEFAULT 'en_US'
 - `shading_mode`: `BOOLEAN` DEFAULT FALSE
 
 **Relationships:**
-- **One-to-One**: Each settings entry is linked to a single user (referenced by `Users(settings_id)`).
+- **One-to-One**: Each settings entry is uniquely linked to a user.
 
----
-
-#### 1.3 **🛠️ Roles Table**
-
-- `id`: `SERIAL` PRIMARY KEY
-- `role_name`: ENUM('admin', 'user') NOT NULL DEFAULT 'user'
+### 1.3 🛠️ Roles Table
+- `id`: `INT` PRIMARY KEY AUTO_INCREMENT
+- `role_name`: `ENUM('admin', 'user')` NOT NULL DEFAULT 'user'
 
 **Relationships:**
-- **One-to-Many**: Multiple users can be assigned the same role (referenced by `Users(role_id)`).
+- **One-to-Many**: Multiple users can be assigned the same role.
 
----
-
-#### 1.4 **🎤 Artists Table**
-
-- `id`: `SERIAL` PRIMARY KEY
+### 1.4 🎤 Artists Table
+- `id`: `INT` PRIMARY KEY AUTO_INCREMENT
 - `name`: `TEXT` NOT NULL
 - `image`: `TEXT`
 - `total_listenings`: `INT` DEFAULT 0
 
 **Relationships:**
-- No direct relationships with other tables.
+- **Many-to-Many**: Linked to tracks via `Artist_Tracks`.
 
----
-
-#### 1.5 **🎧 Playlists Table**
-
-- `id`: `SERIAL` PRIMARY KEY
+### 1.5 🎧 Playlists Table
+- `id`: `INT` PRIMARY KEY AUTO_INCREMENT
 - `name`: `TEXT` NOT NULL
 - `image`: `TEXT`
-- `user_id`: `UUID` REFERENCES `Users(id)` ON DELETE CASCADE
+- `user_id`: `UUID` REFERENCES `Users(id)`
 
 **Relationships:**
-- **Many-to-One**: A playlist is created by a single user (references `Users(id)`).
-- **Many-to-Many**: A playlist can be pinned by multiple users (via `Pinned_Playlists` table).
+- **Many-to-One**: Managed by a user.
+- **Many-to-Many**: Can include multiple tracks and be pinned by multiple users.
 
----
-
-#### 1.6 **🎶 Tracks Table**
-
-- `id`: `SERIAL` PRIMARY KEY
+### 1.6 🎶 Tracks Table
+- `id`: `INT` PRIMARY KEY AUTO_INCREMENT
 - `title`: `TEXT` NOT NULL
 - `file_path`: `TEXT` NOT NULL
 - `image`: `TEXT`
 - `image_color_set`: `JSON`
 - `length`: `INT` NOT NULL
-- `hard_points`: `JSON`
 - `uploaded_by`: `UUID` REFERENCES `Users(id)` NOT NULL
-- `status`: ENUM('pending', 'approved', 'rejected') NOT NULL
-- `source`: ENUM('local', 'remote') DEFAULT 'local'
+- `status`: `ENUM('pending', 'approved', 'rejected')` NOT NULL
+- `source`: `ENUM('local', 'remote')` DEFAULT 'local'
 
 **Relationships:**
-- **Many-to-One**: A track is uploaded by a single user (references `Users(uploaded_by)`).
-- **Many-to-Many**: A track can be liked by multiple users (via `User_Likes` table).
-- **One-to-Many**: A track can be listened to by many users in their track history (referenced by `User_Track_History(track_id)`).
+- **Many-to-One**: Uploaded by a user.
+- **Many-to-Many**: Can belong to multiple genres, be included in multiple playlists, and be liked by multiple users.
 
----
-
-#### 1.7 **📀 Albums Table**
-
-- `id`: `SERIAL` PRIMARY KEY
+### 1.7 📀 Albums Table
+- `id`: `INT` PRIMARY KEY AUTO_INCREMENT
 - `name`: `TEXT` NOT NULL
 - `image`: `TEXT`
-- `release_date`: `TIMESTAMP WITH TIME ZONE`
+- `release_date`: `DATE`
 
 **Relationships:**
-- No direct relationships with other tables.
+- **Many-to-Many**: Albums are connected to tracks and artists through `AlbumTracks` and `AlbumArtists`.
 
----
-
-#### 1.8 **🎚️ Genres Table**
-
-- `id`: `SERIAL` PRIMARY KEY
+### 1.8 🎚️ Genres Table
+- `id`: `INT` PRIMARY KEY AUTO_INCREMENT
 - `name`: `TEXT` NOT NULL UNIQUE
 
 **Relationships:**
-- No direct relationships with other tables.
+- **Many-to-Many**: Linked to tracks via `Track_Genres`.
 
----
-
-#### 1.9 **📝 Journal Logs Table**
-
-- `id`: `SERIAL` PRIMARY KEY
-- `user_id`: `UUID` REFERENCES `Users(id)` ON DELETE CASCADE
-- `action_id`: `INT` REFERENCES `Actions(id)` ON DELETE CASCADE
+### 1.9 📝 Journal Logs Table
+- `id`: `INT` PRIMARY KEY AUTO_INCREMENT
+- `user_id`: `UUID` REFERENCES `Users(id)`
+- `action_id`: `INT` REFERENCES `Actions(id)`
 - `details`: `TEXT`
-- `created_at`: `TIMESTAMP WITH TIME ZONE DEFAULT NOW()`
+- `created_at`: `TIMESTAMP` DEFAULT CURRENT_TIMESTAMP
 
 **Relationships:**
-- **Many-to-One**: A journal log is linked to a single user (references `Users(user_id)`).
-- **Many-to-One**: A journal log records a specific action (references `Actions(action_id)`).
+- **Many-to-One**: Linked to a user and an action.
 
----
-
-#### 1.10 **🛠️ Actions Table**
-
-- `id`: `SERIAL` PRIMARY KEY
+### 1.10 🛠️ Actions Table
+- `id`: `INT` PRIMARY KEY AUTO_INCREMENT
 - `name`: `TEXT` NOT NULL
 - `description`: `TEXT`
 
 **Relationships:**
-- **One-to-Many**: Multiple journal logs can reference a single action (referenced by `Journal_Logs(action_id)`).
+- **One-to-Many**: Can be referenced by multiple journal logs.
 
----
-
-#### 1.11 **🕒 User_Track_History Table**
-
-- `id`: `SERIAL` PRIMARY KEY
-- `user_id`: `UUID` REFERENCES `Users(id)` ON DELETE CASCADE
-- `track_id`: `INT` REFERENCES `Tracks(id)` ON DELETE CASCADE
-- `listened_at`: `TIMESTAMP WITH TIME ZONE DEFAULT NOW()`
+### 1.11 🕒 User Track History Table
+- `id`: `INT` PRIMARY KEY AUTO_INCREMENT
+- `user_id`: `UUID` REFERENCES `Users(id)`
+- `track_id`: `INT` REFERENCES `Tracks(id)`
+- `listened_at`: `TIMESTAMP` DEFAULT CURRENT_TIMESTAMP
 
 **Relationships:**
-- **Many-to-One**: Each entry tracks a single user’s listening history (references `Users(user_id)`).
-- **Many-to-One**: Each entry records the track that was listened to (references `Tracks(track_id)`).
+- **Many-to-One**: Tracks the listening history for a user and a specific track.
 
----
-
-#### 1.12 **❤️ User_Likes Table**
-
-- `user_id`: `UUID` REFERENCES `Users(id)` ON DELETE CASCADE
-- `track_id`: `INT` REFERENCES `Tracks(id)` ON DELETE CASCADE
-- `created_at`: `TIMESTAMP WITH TIME ZONE DEFAULT NOW()`
-- `PRIMARY KEY (user_id, track_id)`
+### 1.12 ❤️ User Likes Table
+- `user_id`: `UUID` REFERENCES `Users(id)`
+- `track_id`: `INT` REFERENCES `Tracks(id)`
+- `liked_at`: `TIMESTAMP` DEFAULT CURRENT_TIMESTAMP
+- `PRIMARY KEY (`user_id`, `track_id`)`
 
 **Relationships:**
-- **Many-to-Many**: Users can like multiple tracks, and tracks can be liked by multiple users (composite primary key on `user_id`, `track_id`).
+- **Many-to-Many**: Tracks can be liked by multiple users and users can like multiple tracks.
 
+## 2. Entity Relations
 
----
+### 2.1 🎨 Track Genres (Join Table)
+- `track_id`: `INT` REFERENCES `Tracks(id)`
+- `genre_id`: `INT` REFERENCES `Genres(id)`
+- `PRIMARY KEY (`track_id`, `genre_id`)`
 
+**Purpose:**  
+Links tracks to genres in a many-to-many relationship.
 
-### 2. **Entities for Relations**
+### 2.2 🎤 Artist Tracks (Join Table)
+- `artist_id`: `INT` REFERENCES `Artists(id)`
+- `track_id`: `INT` REFERENCES `Tracks(id)`
+- `PRIMARY KEY (`artist_id`, `track_id`)`
 
-These tables handle the many-to-many relationships between various entities in the system. They are essential for efficiently linking records across the main entities.
+**Purpose:**  
+Links artists to tracks in a many-to-many relationship.
 
----
+### 2.3 🎧 Playlist Tracks (Join Table)
+- `playlist_id`: `INT` REFERENCES `Playlists(id)`
+- `track_id`: `INT` REFERENCES `Tracks(id)`
+- `PRIMARY KEY (`playlist_id`, `track_id`)`
 
-#### 2.1 **🎨 Track_Genres (Join Table)**
+**Purpose:**  
+Links playlists to tracks in a many-to-many relationship.
 
-- `track_id`: `INT` REFERENCES `Tracks(id)` ON DELETE CASCADE
-- `genre_id`: `INT` REFERENCES `Genres(id)` ON DELETE CASCADE
-- `PRIMARY KEY (track_id, genre_id)`
+### 2.4 📌 Pinned Playlists (Join Table)
+- `user_id`: `UUID` REFERENCES `Users(id)`
+- `playlist_id`: `INT` REFERENCES `Playlists(id)`
+- `PRIMARY KEY (`user_id`, `playlist_id`)`
 
-**Purpose**:  
-This join table links the `Tracks` and `Genres` tables in a many-to-many relationship. A track can belong to multiple genres, and a genre can have multiple tracks.
-
----
-
-#### 2.2 **🎤 Artist_Tracks (Join Table)**
-
-- `artist_id`: `INT` REFERENCES `Artists(id)` ON DELETE CASCADE
-- `track_id`: `INT` REFERENCES `Tracks(id)` ON DELETE CASCADE
-- `PRIMARY KEY (artist_id, track_id)`
-
-**Purpose**:  
-This join table connects the `Artists` and `Tracks` tables in a many-to-many relationship. An artist can have multiple tracks, and a track can have multiple contributing artists.
-
----
-
-#### 2.3 **🎧 Playlist_Tracks (Join Table)**
-
-- `playlist_id`: `INT` REFERENCES `Playlists(id)` ON DELETE CASCADE
-- `track_id`: `INT` REFERENCES `Tracks(id)` ON DELETE CASCADE
-- `PRIMARY KEY (playlist_id, track_id)`
-
-**Purpose**:  
-This join table links the `Playlists` and `Tracks` tables in a many-to-many relationship. A playlist can include multiple tracks, and a track can belong to multiple playlists.
-
----
-
-#### 2.4 **📌 Pinned_Playlists Tabl (Join Table)e**
-
-- `user_id`: `UUID` REFERENCES `Users(id)` ON DELETE CASCADE
-- `playlist_id`: `INT` REFERENCES `Playlists(id)` ON DELETE CASCADE
-- `PRIMARY KEY (user_id, playlist_id)`
-
-**Purpose:**
-This join table links the `Users` and `Playlists` tables in a one-to-many relationship. User can have multiple pinned playlists.
-
----
+**Purpose:**  
+Links users to playlists they have pinned in a many-to-many relationship.
 
 ## 🌐 Diagram
 
