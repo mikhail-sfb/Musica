@@ -257,14 +257,14 @@ Links artists with albums
 <p align="left">
   <img src="https://developer.apple.com/assets/elements/icons/swift/swift-96x96_2x.png" alt="Swift Logo" width="50"/>
   <img src="https://developer.apple.com/assets/elements/icons/metal/metal-96x96_2x.png" alt="Metal Logo" width="50"/>
-  <img src="https://miro.medium.com/v2/resize:fit:600/format:webp/1*nm4j_6GfwWpqhuSPlbO-sg.png" alt="Core Data Logo" width="50"/>
+  <img src="https://avatars.githubusercontent.com/u/7575099?s=200&v=4" alt="Realm Logo" width="50"/>
  <img src= "https://raw.githubusercontent.com/github/explore/f4ec5347a36e06540a69376753a7c37a8cb5a136/topics/supabase/supabase.png" width="50"/>
 </p>
 
 - **Swift**: Language for building the app.
 - **Metal**: For GPU-based animations and effects.
-- **Core Data**: Local reltion data base.
-- **Core Data**: Remote relation data base with raw sql.
+- **Realm**: Local data base.
+- **Supabase**: Remote relation data base with raw sql.
 
 ---
 
