@@ -8,14 +8,21 @@
 import SwiftUI
 
 struct ContentView: View {
+    let date = Date()
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TimelineView(.animation) { _ in
+            GeometryReader { geo in
+                Color.black.ignoresSafeArea()
+                    .colorEffect(
+                        ShaderLibrary.lines(
+                            .float2(geo.size),
+                            .float(date.timeIntervalSinceNow)
+                        )
+                    )
+            }
+
         }
-        .padding()
     }
 }
 
